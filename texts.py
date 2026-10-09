@@ -150,5 +150,30 @@ def t(lang: str, key: str, **kw) -> str:
     return T.get(lang, T["en"])[key].format(**kw)
 
 
+# Назви категорій, що з'явилися з CSV-баз. Нову категорію можна додати в CSV й без запису тут —
+# тоді в меню буде показано її код (наприклад "travel" -> "Travel").
+CATEGORY_NAMES = {
+    "animals": {"uk": "Тварини", "ru": "Животные", "en": "Animals"},
+    "verbs": {"uk": "Дієслова", "ru": "Глаголы", "en": "Verbs"},
+    "questions": {"uk": "Питання", "ru": "Вопросы", "en": "Questions"},
+    "family": {"uk": "Сім'я", "ru": "Семья", "en": "Family"},
+    "emotions": {"uk": "Емоції", "ru": "Эмоции", "en": "Emotions"},
+    "body": {"uk": "Тіло", "ru": "Тело", "en": "Body"},
+    "appearance": {"uk": "Зовнішність", "ru": "Внешность", "en": "Appearance"},
+    "personality": {"uk": "Характер", "ru": "Характер", "en": "Personality"},
+    "places": {"uk": "Місця", "ru": "Места", "en": "Places"},
+    "house": {"uk": "Дім", "ru": "Дом", "en": "House"},
+    "supermarket": {"uk": "Супермаркет", "ru": "Супермаркет", "en": "Supermarket"},
+    "bathroom": {"uk": "Ванна кімната", "ru": "Ванная", "en": "Bathroom"},
+    "kitchen": {"uk": "Кухня та їжа", "ru": "Кухня и еда", "en": "Kitchen & meals"},
+    "clothes": {"uk": "Одяг", "ru": "Одежда", "en": "Clothes"},
+}
+
+
 def cat_label(lang: str, cat: str | None) -> str:
-    return t(lang, f"cat_{cat or 'all'}")
+    key = cat or "all"
+    if key in CATEGORY_NAMES:
+        return CATEGORY_NAMES[key].get(lang) or CATEGORY_NAMES[key]["en"]
+    if f"cat_{key}" in T.get(lang, T["en"]):
+        return t(lang, f"cat_{key}")
+    return key.replace("_", " ").capitalize()

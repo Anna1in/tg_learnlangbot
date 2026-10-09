@@ -254,14 +254,18 @@ async def words_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     lang = await require_lang(update, ctx)
     if not lang:
         return
-    s = await db.get_settings(pool_of(ctx), update.effective_user.id)
+    pool = pool_of(ctx)
+    s = await db.get_settings(pool, update.effective_user.id)
     current = s["category"] if s else None
-    rows = []
-    for cat in [None, *db.CATEGORIES]:
+    learn = await learn_of(update, ctx)
+    cats = [None, *await db.list_categories(pool, lang, learn), "custom"]
+    buttons = []
+    for cat in cats:
         label = cat_label(lang, cat)
         if cat == current:
             label = "✅ " + label
-        rows.append([InlineKeyboardButton(label, callback_data=f"cat:{cat or 'all'}")])
+        buttons.append(InlineKeyboardButton(label, callback_data=f"cat:{cat or 'all'}"))
+    rows = [buttons[i : i + 2] for i in range(0, len(buttons), 2)]
     await update.effective_message.reply_text(
         t(lang, "cat_title"), reply_markup=InlineKeyboardMarkup(rows)
     )
@@ -272,20 +276,30 @@ async def on_category(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     await q.answer()
     cat = q.data.split(":", 1)[1]
     cat = None if cat == "all" else cat
-    if cat is not None and cat not in db.CATEGORIES:
-        return
     lang = await lang_of(update, ctx) or "en"
-    uid = q.from_user.id
-    await db.set_category(pool_of(ctx), uid, cat)
     learn = await learn_of(update, ctx)
-    words = await db.list_words(pool_of(ctx), uid, lang, learn, cat)
+    pool, uid = pool_of(ctx), q.from_user.id
+    if cat is not None and cat not in [*await db.list_categories(pool, lang, learn), "custom"]:
+        return
+    await db.set_category(pool, uid, cat)
+    words = await db.list_words(pool, uid, lang, learn, cat, limit=1000)
     header = t(lang, "words_header", cat=cat_label(lang, cat), n=len(words))
-    if words:
-        body = "\n".join(f"• {w['original']} — {w['translation']}" for w in words)
-        text = f"{header}\n\n{body}"[:4000]
-    else:
-        text = f"{header}\n\n{t(lang, 'words_empty')}"
-    await q.edit_message_text(text)
+    lines = (
+        [f"• {w['original']} — {w['translation']}" for w in words]
+        if words
+        else [t(lang, "words_empty")]
+    )
+    # Telegram обмежує повідомлення 4096 символами — довгі списки ділимо на частини
+    chunks, cur = [], header + "\n"
+    for line in lines:
+        if len(cur) + len(line) + 1 > 3800:
+            chunks.append(cur)
+            cur = ""
+        cur += "\n" + line if cur else line
+    chunks.append(cur)
+    await q.edit_message_text(chunks[0])
+    for extra in chunks[1:]:
+        await q.message.reply_text(extra)
 
 
 # ---------- AI-пояснення з лімітом 5/тиждень (2.4) ----------

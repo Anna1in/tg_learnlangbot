@@ -1,11 +1,19 @@
 """Шар роботи з PostgreSQL (asyncpg): схема, стартові слова, запити."""
+import csv
+import logging
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import asyncpg
 
+log = logging.getLogger("vocab-bot.db")
+
 LANG_CODES = ("uk", "ru", "en")   # мови перекладу
 LEARN_CODES = ("en", "it")        # мови, які можна вивчати
-CATEGORIES = ["greetings", "polite", "basic", "food", "custom"]
+# Бази слів у CSV: мова навчання -> файл. Колонки: category, original, uk [, ru, en]
+WORD_FILES = {
+    "it": Path(__file__).parent / "data" / "italian_words.csv",
+}
 MAX_CUSTOM_WORDS = 500
 
 SCHEMA = """
@@ -88,21 +96,53 @@ async def create_pool(dsn: str) -> asyncpg.Pool:
     return await asyncpg.create_pool(dsn, min_size=1, max_size=5)
 
 
+UPSERT_SYSTEM_WORD = """
+    INSERT INTO words (original, translation, translation_lang, learn_lang, category, owner_id)
+    VALUES ($1, $2, $3, $4, $5, NULL)
+    ON CONFLICT (learn_lang, original, translation_lang) WHERE owner_id IS NULL
+    DO UPDATE SET translation = EXCLUDED.translation, category = EXCLUDED.category
+"""
+
+
+def load_csv_words(learn: str, path: Path) -> list[tuple]:
+    """Читає CSV і повертає рядки (original, translation, translation_lang, learn, category).
+
+    Підтримуються колонки перекладу uk / ru / en — порожні комірки пропускаються.
+    """
+    if not path.exists():
+        log.warning("Word file not found: %s", path)
+        return []
+    rows: list[tuple] = []
+    with path.open(encoding="utf-8-sig", newline="") as f:
+        for n, rec in enumerate(csv.DictReader(f), start=2):
+            category = (rec.get("category") or "").strip().lower()
+            original = (rec.get("original") or "").strip()
+            if not category or not original:
+                log.warning("%s line %s skipped: empty category/original", path.name, n)
+                continue
+            for lang in LANG_CODES:
+                tr = (rec.get(lang) or "").strip()
+                if tr:
+                    rows.append((original, tr, lang, learn, category))
+    return rows
+
+
 async def init(pool: asyncpg.Pool) -> None:
     await pool.execute(SCHEMA)
+
+    # 1) вбудовані стартові слова
     rows = [
         (orig, tr[lang], lang, learn, cat)
         for learn, words in STARTER.items()
         for orig, tr, cat in words
         for lang in LANG_CODES
     ]
-    await pool.executemany(
-        """INSERT INTO words (original, translation, translation_lang, learn_lang, category, owner_id)
-           VALUES ($1, $2, $3, $4, $5, NULL)
-           ON CONFLICT (learn_lang, original, translation_lang) WHERE owner_id IS NULL
-           DO NOTHING""",
-        rows,
-    )
+    # 2) слова з CSV-файлів (нові додаються, змінені оновлюються)
+    for learn, path in WORD_FILES.items():
+        csv_rows = load_csv_words(learn, path)
+        log.info("Loaded %s rows from %s", len(csv_rows), path.name)
+        rows += csv_rows
+    await pool.executemany(UPSERT_SYSTEM_WORD, rows)
 
 
 # ---------- Users / settings ----------
@@ -175,9 +215,23 @@ async def list_words(
     return await pool.fetch(
         f"""SELECT original, translation, category FROM words
             WHERE {POOL_WHERE}
-            ORDER BY category, original LIMIT $5""",
+            ORDER BY id LIMIT $5""",
         user_id, lang, category, learn, limit,
     )
+
+
+async def list_categories(pool, lang: str, learn: str) -> list[str]:
+    """Системні категорії, в яких є слова для цієї пари (мова перекладу, мова навчання).
+
+    Порядок — за першою появою в базі (тобто як у CSV).
+    """
+    rows = await pool.fetch(
+        """SELECT category FROM words
+           WHERE owner_id IS NULL AND learn_lang = $1 AND translation_lang = $2
+           GROUP BY category ORDER BY min(id)""",
+        learn, lang,
+    )
+    return [r["category"] for r in rows]
 
 
 async def random_word(pool, user_id: int, lang: str, learn: str, category: str | None):
