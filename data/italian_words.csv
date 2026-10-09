@@ -1,0 +1,306 @@
+﻿category,original,uk
+food,Il cibo,їжа
+food,Il pane,хліб
+food,Il riso,рис
+food,L'uovo,яйце
+food,La carne,м'ясо
+food,Il pollo,курка
+food,Il maiale,свинина / свиня
+food,La carne di manzo,яловичина
+food,Il pesce,риба
+food,La verdura,овочі
+food,La lattuga,салат (латук)
+food,La cipolla,цибуля
+food,L'aglio,часник
+food,Il peperone,болгарський перець
+food,Il pomodoro,помідор
+food,La frutta,фрукти
+food,La mela,яблуко
+food,La banana,банан
+food,L'ananas,ананас
+food,La fragola,полуниця
+food,L'uva,виноград
+food,La bibita,напій
+food,Il latte,молоко
+food,Il tè,чай
+food,Lo zucchero,цукор
+food,Il miele,мед
+basic,Voglio/vorrei,я хочу / я хотів би
+basic,Con,з
+animals,Gli animali,тварини
+animals,Il gatto,кіт
+animals,Il cane,собака
+animals,L'uccello,птах
+animals,L'elefante,слон
+animals,Il leone,лев
+animals,L'orso,ведмідь
+animals,Il cavallo,кінь
+animals,La tigre,тигр
+animals,Il toro,бик
+animals,La tartaruga,черепаха
+animals,La mucca,корова
+animals,La pecora,вівця
+animals,La papera,качка
+verbs,Correre,бігти
+verbs,Camminare,ходити (пішки)
+verbs,Saltare,стрибати
+verbs,Velocemente,швидко
+verbs,Lentamente,повільно
+verbs,Essere,бути
+verbs,Avere,мати
+verbs,Potere,могти
+verbs,Parlare,говорити
+verbs,Vedere,бачити
+verbs,Sapere,знати (вміти)
+verbs,Conoscere,знати (бути знайомим)
+verbs,Mettere,класти / ставити
+verbs,Dire,казати
+verbs,Volere,хотіти
+verbs,Dare,давати
+verbs,Mangiare,їсти
+questions,Domande,питання
+questions,Quale/i,який / які
+questions,Quando,коли
+questions,Dove,де
+questions,Perché,чому / тому що
+questions,Che cosa,що
+questions,Come,як
+questions,Quanto,скільки (обсяг)
+questions,Quanti,скільки (кількість штук)
+questions,Chi,хто
+family,Famiglia,сім'я
+family,Genitori,батьки
+family,Madre/mamma,мати / мама
+family,Padre/papà,батько / тато
+family,Figlio,син
+family,Figlia,дочка
+family,Fratello,брат
+family,Sorella,сестра
+family,Fratelli,брати / брати й сестри
+family,Zio,дядько
+family,Zia,тітка
+family,Nonno,дідусь
+family,Nonna,бабуся
+family,Bisnonno,прадідусь
+family,Bisnonna,прабабуся
+family,Nipote,онук / онучка / племінник / племінниця
+family,Moglie,дружина
+family,Marito,чоловік (у шлюбі)
+family,Cugino,двоюрідний брат
+family,Cugina,двоюрідна сестра
+family,Parenti,родичі
+emotions,Emozioni,емоції
+emotions,Felice,щасливий
+emotions,Triste,сумний
+emotions,Ansioso,тривожний
+emotions,Nervoso,нервовий
+emotions,Preoccupato,стурбований
+emotions,Emozionato,схвильований
+emotions,Timido,сором'язливий
+emotions,Estroverso,товариський (екстраверт)
+emotions,Imbarazzato,збентежений
+emotions,Sorpreso,здивований
+emotions,Frustrato,розчарований
+emotions,Impaurito,наляканий
+emotions,Confuso,розгублений
+emotions,Annoiato,знудьгований
+emotions,Arrabbiato,сердитий
+emotions,Stanco,втомлений
+body,Corpo,тіло
+body,Testa,голова
+body,Faccia/viso,обличчя
+body,Capelli,волосся
+body,Occhio,око
+body,Bocca,рот
+body,Naso,ніс
+body,Dente,зуб
+body,Collo,шия
+body,Spalla,плече
+body,Braccio,рука (від плеча)
+body,Gomito,лікоть
+body,Polso,зап'ястя
+body,Mano,кисть руки
+body,Dito,палець
+body,Schiena,спина
+body,Petto,груди
+body,Stomaco,шлунок
+body,Pancia,живіт
+body,Fianco,бік (стегно)
+body,Gamba,нога
+body,Ginocchio,коліно
+body,Caviglia,щиколотка
+body,Piede,стопа
+body,Dita dei piedi,пальці ніг
+appearance,Caratteristiche fisiche,зовнішність
+appearance,Carino,милий
+appearance,Bello,гарний
+appearance,Brutto,негарний
+appearance,Alto,високий
+appearance,Basso,низький
+appearance,Giovane,молодий
+appearance,Vecchio/anziano,старий / літній
+appearance,Biondo,світловолосий
+appearance,Castano,каштановий
+appearance,Brizzolato,сивіючий
+appearance,Attraente,привабливий
+appearance,Muscoloso,мускулистий
+appearance,Magro,худий
+appearance,Grasso,товстий
+personality,Personalità,характер (особистість)
+personality,Simpatico,приємний
+personality,Generoso,щедрий
+personality,Ottimista,оптиміст
+personality,Pessimista,песиміст
+personality,Orribile,жахливий
+personality,Intelligente,розумний
+personality,Coraggioso,сміливий
+personality,Serio,серйозний
+personality,Riservato,стриманий
+personality,Pigro,лінивий
+personality,Onesto,чесний
+personality,Bugiardo,брехливий
+personality,Cattivo,поганий / злий
+personality,Interessante,цікавий
+personality,Impulsivo,імпульсивний
+personality,(Im)paziente,терплячий / нетерплячий
+personality,Divertente,веселий (кумедний)
+personality,Forte,сильний
+personality,(In)dipendente,залежний / незалежний
+personality,Cinico,цинічний
+personality,Curioso,допитливий
+personality,Appassionato,пристрасний
+personality,Ambizioso,амбітний
+personality,Sensibile,чутливий
+places,Luoghi,місця
+places,Indicazioni,напрямки (вказівки)
+places,Casa,дім
+places,Cinema,кінотеатр
+places,Banca,банк
+places,Biblioteca,бібліотека
+places,Negozio,магазин
+places,Edificio,будівля
+places,Parco,парк
+places,Parcheggio,парковка
+places,Strada,вулиця / дорога
+places,Bar,бар (кафе)
+places,Ristorante,ресторан
+places,Chiesa,церква
+places,Stazione,вокзал / станція
+places,Fermata del bus,автобусна зупинка
+places,Comune,міська рада (комуна)
+places,Mercato,ринок
+places,Supermercato,супермаркет
+places,Ufficio,офіс
+places,Destra,праворуч
+places,Sinistra,ліворуч
+places,Girare a,повернути (на)
+places,"Mi scusi, dov'è?","Вибачте, де знаходиться...?"
+places,Dove vai?,Куди ти йдеш?
+house,Stanza,кімната
+house,Cucina,кухня
+house,Salotto,вітальня
+house,Sala da pranzo,їдальня
+house,Camera da letto,спальня
+house,Bagno,ванна кімната
+house,Garage,гараж
+house,Giardino,сад
+house,Piano/Pavimento,поверх / підлога
+house,Soffitto,стеля
+house,Televisione/TV,телевізор
+house,Porta,двері
+house,Finestra,вікно
+house,Orologio,годинник
+house,Lampadario/Lampada,люстра / лампа
+house,Frigorifero,холодильник
+house,Forno,духовка / піч
+house,Armadio,шафа
+house,Letto,ліжко
+house,Pulire,прибирати
+house,Lavare,мити / прати
+supermarket,Prezzo,ціна
+supermarket,Sconto/promozione,знижка / акція
+supermarket,Busta,пакет
+supermarket,Reparto,відділ
+supermarket,Cassa,каса
+supermarket,Carrello,візок
+supermarket,Frutta e verdura,фрукти й овочі
+supermarket,Latticini,молочні продукти
+supermarket,Pasta,макарони (паста)
+supermarket,Dolci,солодощі
+supermarket,Comprare,купувати
+supermarket,Costare,коштувати
+supermarket,Quanto costa(no)?,Скільки це коштує?
+supermarket,C'è/Ci sono,є (одн.) / є (мн.)
+bathroom,Lavandino,умивальник
+bathroom,WC,туалет
+bathroom,Doccia,душ
+bathroom,Fare la doccia,приймати душ
+bathroom,Shampoo,шампунь
+bathroom,Balsamo,бальзам для волосся
+bathroom,Bagnoschiuma,гель для душу
+bathroom,Spazzolino,зубна щітка
+bathroom,Dentifricio,зубна паста
+bathroom,Carta igienica,туалетний папір
+bathroom,Specchio,дзеркало
+bathroom,Spazzola/pettine,щітка / гребінець
+bathroom,Asciugamano,рушник
+kitchen,Microonde,мікрохвильова піч
+kitchen,Tavolo,стіл
+kitchen,Sedia,стілець
+kitchen,Cestino,кошик для сміття
+kitchen,Spazzatura,сміття
+kitchen,Credenza,буфет (сервант)
+kitchen,Posate,столові прибори
+kitchen,Forchetta,виделка
+kitchen,Coltello,ніж
+kitchen,Cucchiaio,ложка
+kitchen,Cucchiaino,чайна ложка
+kitchen,Bicchiere,склянка
+kitchen,Tazza,чашка
+kitchen,Piatto,тарілка
+kitchen,Acido,кислий
+kitchen,Amaro,гіркий
+kitchen,Dolce,солодкий / ніжний (про людину)
+kitchen,Piccante,гострий
+kitchen,Sale,сіль
+kitchen,Salato,солоний
+kitchen,Pepe,перець
+kitchen,Cucinare/cuocere,готувати
+kitchen,Cuocere al forno,запікати
+kitchen,Tagliare,різати
+kitchen,Pelare,чистити (овочі)
+kitchen,Friggere,смажити
+kitchen,Colazione,сніданок
+kitchen,Fare colazione,снідати
+kitchen,Pranzo,обід
+kitchen,Pranzare,обідати
+kitchen,Cena,вечеря
+kitchen,Cenare,вечеряти
+clothes,Vestiti,одяг
+clothes,Maglietta,футболка
+clothes,Maglione,светр
+clothes,Cappotto,пальто
+clothes,Sciarpa,шарф
+clothes,Cappello,капелюх
+clothes,Pantaloni,штани
+clothes,Jeans,джинси
+clothes,Pantaloncini,шорти
+clothes,Gonna,спідниця
+clothes,Vestito,сукня (або костюм)
+clothes,Calzini,шкарпетки
+clothes,Ciabatte/Pantofole,тапочки
+clothes,Scarpe,взуття
+clothes,Scarpe da ginnastica,кросівки
+clothes,Stivali,чоботи
+clothes,Intimo,нижня білизна
+clothes,Pigiama,піжама
+clothes,Completo,костюм (чоловічий)
+clothes,Cravatta,краватка
+clothes,Cintura,пасок
+clothes,Camicia,сорочка
+clothes,Camicetta,блузка
+clothes,Portare,носити
+clothes,Indossare,одягати (на себе)
+clothes,Andare a fare shopping,іти за покупками
+clothes,Provare,приміряти
+clothes,Centro commerciale,торговий центр
