@@ -7,6 +7,7 @@ import asyncio
 import html
 import logging
 import os
+import random
 import re
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
@@ -47,6 +48,10 @@ TZ = ZoneInfo(os.environ.get("TZ_NAME", "Europe/Kyiv"))
 AI_LIMIT = int(os.environ.get("AI_WEEKLY_LIMIT", "5"))
 AI_WINDOW = timedelta(days=7)
 MORNING_HOUR, EVENING_HOUR = 9, 20
+# Нічний режим: у цей проміжок сповіщення не надсилаються (за часовим поясом TZ_NAME)
+QUIET_START = int(os.environ.get("QUIET_HOURS_START", "22"))
+QUIET_END = int(os.environ.get("QUIET_HOURS_END", "9"))
+QUIZ_LEN = 10  # питань в одній вікторині
 
 INTERVAL_OPTIONS = [  # (callback value, ключ тексту)
     ("60", "i_60"),
@@ -65,7 +70,9 @@ def btn_filter(key: str) -> filters.BaseFilter:
     return filters.Regex("^(" + "|".join(re.escape(T[l][key]) for l in T) + ")$")
 
 
-MENU_KEYS = ("btn_add", "btn_words", "btn_ai", "btn_interval", "btn_lang", "btn_learn")
+MENU_KEYS = (
+    "btn_add", "btn_words", "btn_quiz", "btn_ai", "btn_interval", "btn_lang", "btn_learn",
+)
 MENU_FILTER = filters.Regex(
     "^(" + "|".join(re.escape(T[l][k]) for l in T for k in MENU_KEYS) + ")$"
 )
@@ -80,8 +87,9 @@ def main_kb(lang: str) -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         [
             [t(lang, "btn_add"), t(lang, "btn_words")],
-            [t(lang, "btn_ai"), t(lang, "btn_interval")],
-            [t(lang, "btn_lang"), t(lang, "btn_learn")],
+            [t(lang, "btn_quiz"), t(lang, "btn_ai")],
+            [t(lang, "btn_interval"), t(lang, "btn_learn")],
+            [t(lang, "btn_lang")],
         ],
         resize_keyboard=True,
     )
@@ -398,6 +406,146 @@ async def on_interval(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     await q.edit_message_text(t(lang, "int_set", label=interval_label(lang, s)))
 
 
+# ---------- Вікторина: слово + 4 варіанти перекладу ----------
+
+
+async def build_question(ctx, uid: int, lang: str, learn: str, category, seen: list[int]):
+    """Питання: випадкове слово + правильний переклад і 3 хибні з тієї ж добірки слів."""
+    pool = pool_of(ctx)
+    rows = await db.quiz_pool(pool, uid, lang, learn, category)
+    if len({r["translation"] for r in rows}) < 4 and category is not None:
+        rows = await db.quiz_pool(pool, uid, lang, learn, None)  # у категорії замало слів
+    translations = {r["translation"] for r in rows}
+    if len(translations) < 4:
+        return None
+    candidates = [r for r in rows if r["id"] not in seen] or rows
+    word = random.choice(candidates)
+    wrong = random.sample(sorted(translations - {word["translation"]}), 3)
+    options = [word["translation"], *wrong]
+    random.shuffle(options)
+    return {
+        "word_id": word["id"],
+        "word": word["original"],
+        "options": options,
+        "correct": options.index(word["translation"]),
+        "answered": False,
+    }
+
+
+def quiz_question_view(lang: str, quiz: dict):
+    q = quiz["q"]
+    text = t(lang, "quiz_question", n=quiz["n"] + 1, total=QUIZ_LEN, word=q["word"])
+    kb = InlineKeyboardMarkup(
+        [[InlineKeyboardButton(o[:60], callback_data=f"qz:a:{i}")] for i, o in enumerate(q["options"])]
+    )
+    return text, kb
+
+
+async def new_quiz(ctx, uid: int, lang: str, learn: str):
+    """Створює сесію вікторини; повертає (текст, клавіатура) або None, якщо слів замало."""
+    s = await db.get_settings(pool_of(ctx), uid)
+    category = s["category"] if s else None
+    question = await build_question(ctx, uid, lang, learn, category, [])
+    if question is None:
+        return None
+    quiz = {"score": 0, "n": 0, "seen": [], "category": category, "learn": learn, "q": question}
+    ctx.user_data["quiz"] = quiz
+    return quiz_question_view(lang, quiz)
+
+
+async def quiz_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    lang = await require_lang(update, ctx)
+    if not lang:
+        return
+    learn = await learn_of(update, ctx)
+    view = await new_quiz(ctx, update.effective_user.id, lang, learn)
+    if view is None:
+        await update.effective_message.reply_text(t(lang, "quiz_need_words"))
+        return
+    await update.effective_message.reply_text(view[0], reply_markup=view[1])
+
+
+async def on_quiz(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    q = update.callback_query
+    parts = q.data.split(":")  # qz:a:<i> | qz:next | qz:stop | qz:again
+    action = parts[1] if len(parts) > 1 else ""
+    lang = await lang_of(update, ctx) or "en"
+
+    if action == "again":
+        await q.answer()
+        learn = await learn_of(update, ctx)
+        view = await new_quiz(ctx, q.from_user.id, lang, learn)
+        if view is None:
+            await q.edit_message_text(t(lang, "quiz_need_words"))
+        else:
+            await q.edit_message_text(view[0], reply_markup=view[1])
+        return
+
+    quiz = ctx.user_data.get("quiz")
+    if not quiz:  # бот перезапускався або вікторину вже завершено
+        await q.answer(t(lang, "quiz_expired"), show_alert=True)
+        return
+    cur = quiz["q"]
+
+    if action == "a":
+        try:
+            idx = int(parts[2])
+        except (IndexError, ValueError):
+            await q.answer()
+            return
+        if cur["answered"] or not 0 <= idx < len(cur["options"]):
+            await q.answer()
+            return
+        cur["answered"] = True
+        quiz["n"] += 1
+        quiz["seen"].append(cur["word_id"])
+        if idx == cur["correct"]:
+            quiz["score"] += 1
+            verdict = t(lang, "quiz_correct")
+        else:
+            verdict = t(lang, "quiz_wrong", correct=cur["options"][cur["correct"]])
+        text = (
+            f"{cur['word']}\n\n{verdict}\n"
+            f"{t(lang, 'quiz_score_line', score=quiz['score'], n=quiz['n'])}"
+        )
+        if quiz["n"] >= QUIZ_LEN:
+            rows = [[InlineKeyboardButton(t(lang, "quiz_finish_btn"), callback_data="qz:stop")]]
+        else:
+            rows = [
+                [InlineKeyboardButton(t(lang, "quiz_next"), callback_data="qz:next")],
+                [InlineKeyboardButton(t(lang, "quiz_stop"), callback_data="qz:stop")],
+            ]
+        await q.answer()
+        await q.edit_message_text(text, reply_markup=InlineKeyboardMarkup(rows))
+
+    elif action == "next":
+        await q.answer()
+        if not cur["answered"]:
+            return
+        nxt = await build_question(
+            ctx, q.from_user.id, lang, quiz["learn"], quiz["category"], quiz["seen"]
+        )
+        if nxt is None:
+            ctx.user_data.pop("quiz", None)
+            await q.edit_message_text(t(lang, "quiz_need_words"))
+            return
+        quiz["q"] = nxt
+        text, kb = quiz_question_view(lang, quiz)
+        await q.edit_message_text(text, reply_markup=kb)
+
+    elif action == "stop":
+        await q.answer()
+        ctx.user_data.pop("quiz", None)
+        kb = InlineKeyboardMarkup(
+            [[InlineKeyboardButton(t(lang, "quiz_again"), callback_data="qz:again")]]
+        )
+        await q.edit_message_text(
+            t(lang, "quiz_result", score=quiz["score"], n=quiz["n"]), reply_markup=kb
+        )
+    else:
+        await q.answer()
+
+
 # ---------- Планувальник сповіщень (APScheduler + БД) ----------
 
 
@@ -438,8 +586,18 @@ async def send_notification(app: Application, r) -> None:
     await db.touch_sent(pool, uid)
 
 
+def in_quiet_hours(now: datetime) -> bool:
+    """True, якщо зараз нічний режим (за замовчуванням 22:00–09:00 за TZ_NAME)."""
+    h = now.astimezone(TZ).hour
+    if QUIET_START > QUIET_END:  # проміжок через північ
+        return h >= QUIET_START or h < QUIET_END
+    return QUIET_START <= h < QUIET_END
+
+
 async def tick(app: Application) -> None:
     now = datetime.now(timezone.utc)
+    if in_quiet_hours(now):
+        return  # вночі не турбуємо; о 09:00 відправляться ті, чий час уже настав
     try:
         rows = await db.users_for_notifications(app.bot_data["db"])
         for r in rows:
@@ -469,6 +627,7 @@ async def post_init(app: Application) -> None:
     pool = await db.create_pool(DATABASE_URL)
     await db.init(pool)
     app.bot_data["db"] = pool
+    log.info("Gemini model: %s | quiet hours: %02d:00-%02d:00 (%s)", ai.MODEL, QUIET_START, QUIET_END, TZ)
 
     scheduler = AsyncIOScheduler(timezone=TZ)
     scheduler.add_job(
@@ -483,6 +642,7 @@ async def post_init(app: Application) -> None:
             BotCommand("start", "Start / menu"),
             BotCommand("add", "Add a word"),
             BotCommand("words", "Categories and word list"),
+            BotCommand("quiz", "Quiz: pick the right translation"),
             BotCommand("explain", "AI explanation of a word"),
             BotCommand("settings_interval", "Notification interval"),
             BotCommand("language", "Translation language"),
@@ -538,6 +698,9 @@ def main() -> None:
     app.add_handler(MessageHandler(btn_filter("btn_interval"), interval_menu))
     app.add_handler(CommandHandler("language", language_menu))
     app.add_handler(MessageHandler(btn_filter("btn_lang"), language_menu))
+    app.add_handler(CommandHandler("quiz", quiz_start))
+    app.add_handler(MessageHandler(btn_filter("btn_quiz"), quiz_start))
+    app.add_handler(CallbackQueryHandler(on_quiz, pattern=r"^qz:"))
     app.add_handler(CommandHandler("learn", learn_menu))
     app.add_handler(MessageHandler(btn_filter("btn_learn"), learn_menu))
     app.add_handler(CallbackQueryHandler(on_lang, pattern=r"^lang:"))

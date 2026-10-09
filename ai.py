@@ -1,10 +1,17 @@
 """Інтеграція з Gemini API: пояснення слів/виразів у реальному житті."""
+import logging
 import os
 
 from google import genai
-from google.genai import types
+from google.genai import errors, types
 
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
+log = logging.getLogger("vocab-bot.ai")
+
+# Змінна оточення GEMINI_MODEL має пріоритет над значенням за замовчуванням!
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash").strip()
+# Якщо обрана модель знята з підтримки (404), пробуємо ці по черзі.
+FALLBACK_MODELS = ["gemini-3.8-flash", "gemini-3.7-flash"]
+
 LANG_NAMES = {"uk": "Ukrainian", "ru": "Russian", "en": "English"}
 LANG_NAMES_LEARN = {"en": "English", "it": "Italian"}
 
@@ -16,6 +23,15 @@ def _get_client() -> genai.Client:
     if _client is None:
         _client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
     return _client
+
+
+def _candidate_models() -> list[str]:
+    seen, result = set(), []
+    for m in [MODEL, *FALLBACK_MODELS]:
+        if m and m not in seen:
+            seen.add(m)
+            result.append(m)
+    return result
 
 
 async def explain(term: str, lang: str, learn: str = "en") -> str:
@@ -36,16 +52,24 @@ async def explain(term: str, lang: str, learn: str = "en") -> str:
         f"✍️ 3 example sentences in {studied}, each with a translation\n"
         "⚠️ Common mistakes or similar expressions (if relevant)"
     )
-    resp = await _get_client().aio.models.generate_content(
-        model=MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=system,
-            temperature=0.4,
-            max_output_tokens=2500,  # запас під «thinking»-токени моделей 2.5
-        ),
-    )
-    text = (resp.text or "").strip()
-    if not text:
-        raise RuntimeError("Empty response from Gemini")
-    return text[:3800]
+    # Gemini 3: параметри семплінгу (temperature тощо) не підтримуються — не передаємо їх.
+    # Ліміт токенів із запасом: модель «думає», і ці токени входять у max_output_tokens.
+    config = types.GenerateContentConfig(system_instruction=system, max_output_tokens=8000)
+
+    last_error: Exception | None = None
+    for model in _candidate_models():
+        try:
+            resp = await _get_client().aio.models.generate_content(
+                model=model, contents=prompt, config=config
+            )
+        except errors.ClientError as e:
+            if getattr(e, "code", None) == 404:  # модель недоступна — пробуємо наступну
+                log.warning("Gemini model %s is not available (404), trying next", model)
+                last_error = e
+                continue
+            raise
+        text = (resp.text or "").strip()
+        if not text:
+            raise RuntimeError(f"Empty response from Gemini model {model}")
+        return text[:3800]
+    raise last_error or RuntimeError("No Gemini model available")

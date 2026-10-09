@@ -220,6 +220,15 @@ async def list_words(
     )
 
 
+async def quiz_pool(pool, user_id: int, lang: str, learn: str, category: str | None):
+    """Усі слова користувача (id, слово, переклад) для побудови питань вікторини."""
+    return await pool.fetch(
+        f"""SELECT id, original, translation FROM words
+            WHERE {POOL_WHERE}""",
+        user_id, lang, category, learn,
+    )
+
+
 async def list_categories(pool, lang: str, learn: str) -> list[str]:
     """Системні категорії, в яких є слова для цієї пари (мова перекладу, мова навчання).
 

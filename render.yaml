@@ -23,8 +23,12 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-3.5-flash-lite
+        value: gemini-3.8-flash
       - key: TZ_NAME
         value: Europe/Kyiv
       - key: AI_WEEKLY_LIMIT
         value: "5"
+      - key: QUIET_HOURS_START
+        value: "22"
+      - key: QUIET_HOURS_END
+        value: "9"
