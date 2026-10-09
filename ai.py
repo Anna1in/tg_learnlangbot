@@ -4,7 +4,7 @@ import os
 from google import genai
 from google.genai import types
 
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
 LANG_NAMES = {"uk": "Ukrainian", "ru": "Russian", "en": "English"}
 LANG_NAMES_LEARN = {"en": "English", "it": "Italian"}
 
