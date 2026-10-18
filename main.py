@@ -258,25 +258,79 @@ async def cancel(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> int:
 # ---------- Категорії та список слів (2.2) ----------
 
 
+# Порядок підтем у підменю (інші підтеми йдуть після них у порядку додавання)
+SUBTOPIC_ORDER = [
+    "verbs_are", "verbs_ere", "verbs_ire", "verbs_isco", "verbs_reflexive",
+    "verbs_irregular", "verbs_pp_avere", "verbs_pp_essere", "verbs_pp_irregular",
+]
+
+
+def group_of(code: str) -> str | None:
+    """Підтема має код "розділ_підтема" (verbs_are -> розділ verbs)."""
+    return code.split("_", 1)[0] if "_" in code else None
+
+
+async def category_view(ctx, uid: int, lang: str, learn: str, group: str | None = None):
+    """Повертає (текст, клавіатура): головне меню категорій або підменю розділу `group`."""
+    pool = pool_of(ctx)
+    s = await db.get_settings(pool, uid)
+    current = s["category"] if s else None
+    codes = await db.list_categories(pool, lang, learn)
+
+    def btn(label: str, cat: str | None, data: str) -> InlineKeyboardButton:
+        return InlineKeyboardButton(("✅ " if cat == current else "") + label, callback_data=data)
+
+    if group is None:
+        entries: list[str | None] = [None]
+        seen_groups: set[str] = set()
+        for code in codes:
+            g = group_of(code)
+            if g is None:
+                entries.append(code)
+            elif g not in seen_groups:
+                seen_groups.add(g)
+                entries.append("@" + g)
+        entries.append("custom")
+        buttons = []
+        for e in entries:
+            if e is not None and e.startswith("@"):
+                g = e[1:]
+                inside = current is not None and (current == g or group_of(current) == g)
+                label = ("✅ " if inside else "") + "📂 " + cat_label(lang, g)
+                buttons.append(InlineKeyboardButton(label, callback_data=f"grp:{g}"))
+            else:
+                buttons.append(btn(cat_label(lang, e), e, f"cat:{e or 'all'}"))
+        rows = [buttons[i : i + 2] for i in range(0, len(buttons), 2)]
+        return t(lang, "cat_title"), InlineKeyboardMarkup(rows)
+
+    children = sorted(
+        (c for c in codes if group_of(c) == group),
+        key=lambda c: SUBTOPIC_ORDER.index(c) if c in SUBTOPIC_ORDER else len(SUBTOPIC_ORDER),
+    )
+    rows = [[btn(t(lang, "cat_group_all", cat=cat_label(lang, group)), group, f"cat:{group}")]]
+    rows += [[btn(cat_label(lang, c), c, f"cat:{c}")] for c in children]
+    rows.append([InlineKeyboardButton(t(lang, "cat_back"), callback_data="grp:")])
+    return t(lang, "cat_sub_title", cat=cat_label(lang, group)), InlineKeyboardMarkup(rows)
+
+
 async def words_menu(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     lang = await require_lang(update, ctx)
     if not lang:
         return
-    pool = pool_of(ctx)
-    s = await db.get_settings(pool, update.effective_user.id)
-    current = s["category"] if s else None
     learn = await learn_of(update, ctx)
-    cats = [None, *await db.list_categories(pool, lang, learn), "custom"]
-    buttons = []
-    for cat in cats:
-        label = cat_label(lang, cat)
-        if cat == current:
-            label = "✅ " + label
-        buttons.append(InlineKeyboardButton(label, callback_data=f"cat:{cat or 'all'}"))
-    rows = [buttons[i : i + 2] for i in range(0, len(buttons), 2)]
-    await update.effective_message.reply_text(
-        t(lang, "cat_title"), reply_markup=InlineKeyboardMarkup(rows)
-    )
+    text, kb = await category_view(ctx, update.effective_user.id, lang, learn)
+    await update.effective_message.reply_text(text, reply_markup=kb)
+
+
+async def on_group(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Відкриває підменю розділу (grp:verbs) або повертає до головного меню (grp:)."""
+    q = update.callback_query
+    await q.answer()
+    group = q.data.split(":", 1)[1] or None
+    lang = await lang_of(update, ctx) or "en"
+    learn = await learn_of(update, ctx)
+    text, kb = await category_view(ctx, q.from_user.id, lang, learn, group)
+    await q.edit_message_text(text, reply_markup=kb)
 
 
 async def on_category(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
@@ -287,8 +341,11 @@ async def on_category(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     lang = await lang_of(update, ctx) or "en"
     learn = await learn_of(update, ctx)
     pool, uid = pool_of(ctx), q.from_user.id
-    if cat is not None and cat not in [*await db.list_categories(pool, lang, learn), "custom"]:
-        return
+    if cat is not None:
+        codes = await db.list_categories(pool, lang, learn)
+        valid = {*codes, "custom", *(g for g in map(group_of, codes) if g)}
+        if cat not in valid:
+            return
     await db.set_category(pool, uid, cat)
     words = await db.list_words(pool, uid, lang, learn, cat, limit=1000)
     header = t(lang, "words_header", cat=cat_label(lang, cat), n=len(words))
@@ -409,6 +466,12 @@ async def on_interval(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 # ---------- Вікторина: слово + 4 варіанти перекладу ----------
 
 
+def _synonyms(translation: str) -> set[str]:
+    """Значення перекладу без дужок: 'швидкий / легкий (простий)' -> {'швидкий', 'легкий'}."""
+    base = re.sub(r"\([^)]*\)", "", translation).lower()
+    return {p.strip() for p in re.split(r"[/;,]", base) if p.strip()}
+
+
 async def build_question(ctx, uid: int, lang: str, learn: str, category, seen: list[int]):
     """Питання: випадкове слово + правильний переклад і 3 хибні з тієї ж добірки слів."""
     pool = pool_of(ctx)
@@ -420,7 +483,11 @@ async def build_question(ctx, uid: int, lang: str, learn: str, category, seen: l
         return None
     candidates = [r for r in rows if r["id"] not in seen] or rows
     word = random.choice(candidates)
-    wrong = random.sample(sorted(translations - {word["translation"]}), 3)
+    correct = word["translation"]
+    others = sorted(translations - {correct})
+    # Хибні варіанти не мають збігатися за змістом із правильним («спокійний» vs «спокійний (тихий)»)
+    distinct = [tr for tr in others if _synonyms(tr).isdisjoint(_synonyms(correct))]
+    wrong = random.sample(distinct if len(distinct) >= 3 else others, 3)
     options = [word["translation"], *wrong]
     random.shuffle(options)
     return {
@@ -706,6 +773,7 @@ def main() -> None:
     app.add_handler(CallbackQueryHandler(on_lang, pattern=r"^lang:"))
     app.add_handler(CallbackQueryHandler(on_learn, pattern=r"^learn:"))
     app.add_handler(CallbackQueryHandler(on_category, pattern=r"^cat:"))
+    app.add_handler(CallbackQueryHandler(on_group, pattern=r"^grp:"))
     app.add_handler(CallbackQueryHandler(on_interval, pattern=r"^int:"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, hint))
     app.add_error_handler(on_error)

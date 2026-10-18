@@ -41,23 +41,23 @@ animals,La tartaruga,черепаха
 animals,La mucca,корова
 animals,La pecora,вівця
 animals,La papera,качка
-verbs,Correre,бігти
-verbs,Camminare,ходити (пішки)
-verbs,Saltare,стрибати
-verbs,Velocemente,швидко
-verbs,Lentamente,повільно
-verbs,Essere,бути
-verbs,Avere,мати
-verbs,Potere,могти
-verbs,Parlare,говорити
-verbs,Vedere,бачити
-verbs,Sapere,знати (вміти)
-verbs,Conoscere,знати (бути знайомим)
-verbs,Mettere,класти / ставити
-verbs,Dire,казати
-verbs,Volere,хотіти
-verbs,Dare,давати
-verbs,Mangiare,їсти
+verbs_ere,Correre,бігти
+verbs_are,Camminare,ходити (пішки)
+verbs_are,Saltare,стрибати
+basic,Velocemente,швидко
+basic,Lentamente,повільно
+verbs_irregular,Essere,бути
+verbs_irregular,Avere,мати
+verbs_irregular,Potere,могти
+verbs_are,Parlare,говорити
+verbs_ere,Vedere,бачити
+verbs_irregular,Sapere,знати (вміти)
+verbs_ere,Conoscere,знати (бути знайомим)
+verbs_ere,Mettere,класти / ставити
+verbs_irregular,Dire,казати
+verbs_irregular,Volere,хотіти
+verbs_irregular,Dare,давати
+verbs_are,Mangiare,їсти
 questions,Domande,питання
 questions,Quale/i,який / які
 questions,Quando,коли
@@ -260,7 +260,7 @@ kitchen,Tazza,чашка
 kitchen,Piatto,тарілка
 kitchen,Acido,кислий
 kitchen,Amaro,гіркий
-kitchen,Dolce,солодкий / ніжний (про людину)
+kitchen,Dolce,солодкий / десерт / ніжний (про людину)
 kitchen,Piccante,гострий
 kitchen,Sale,сіль
 kitchen,Salato,солоний

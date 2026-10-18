@@ -10,9 +10,15 @@ log = logging.getLogger("vocab-bot.db")
 
 LANG_CODES = ("uk", "ru", "en")   # мови перекладу
 LEARN_CODES = ("en", "it")        # мови, які можна вивчати
-# Бази слів у CSV: мова навчання -> файл. Колонки: category, original, uk [, ru, en]
+# Бази слів у CSV: мова навчання -> список файлів. Колонки: category, original, uk [, ru, en]
+# Підтема задається кодом категорії "розділ_підтема" (наприклад verbs_are — підтема розділу verbs).
+_DATA = Path(__file__).parent / "data"
 WORD_FILES = {
-    "it": Path(__file__).parent / "data" / "italian_words.csv",
+    "it": [
+        _DATA / "italian_words.csv",        # слова зі слайдів «Ripasso»
+        _DATA / "italian_vocab_guide.csv",  # Italian Study Guide, сторінки 2–12
+        _DATA / "italian_verbs.csv",        # Italian Study Guide, сторінки 13–18 (підтеми дієслів)
+    ],
 }
 MAX_CUSTOM_WORDS = 500
 
@@ -85,10 +91,14 @@ STARTER_IT = [
 STARTER = {"en": STARTER_EN, "it": STARTER_IT}
 
 # Слова, доступні користувачу: системні (на його мові) + його власні.
-POOL_WHERE = """(
+# Категорія $3 охоплює і свої підтеми: "verbs" -> verbs, verbs_are, verbs_ere, ...
+_CATEGORY_MATCH = """($3::text IS NULL OR category = $3::text
+        OR left(category, length($3::text) + 1) = $3::text || '_')"""
+
+POOL_WHERE = f"""(
     (owner_id IS NULL AND translation_lang = $2 AND learn_lang = $4::text
-        AND ($3::text IS NULL OR category = $3))
-    OR (owner_id = $1 AND learn_lang = $4::text AND ($3::text IS NULL OR category = $3))
+        AND {_CATEGORY_MATCH})
+    OR (owner_id = $1 AND learn_lang = $4::text AND {_CATEGORY_MATCH})
 )"""
 
 
@@ -138,10 +148,11 @@ async def init(pool: asyncpg.Pool) -> None:
         for lang in LANG_CODES
     ]
     # 2) слова з CSV-файлів (нові додаються, змінені оновлюються)
-    for learn, path in WORD_FILES.items():
-        csv_rows = load_csv_words(learn, path)
-        log.info("Loaded %s rows from %s", len(csv_rows), path.name)
-        rows += csv_rows
+    for learn, paths in WORD_FILES.items():
+        for path in paths:
+            csv_rows = load_csv_words(learn, path)
+            log.info("Loaded %s rows from %s", len(csv_rows), path.name)
+            rows += csv_rows
     await pool.executemany(UPSERT_SYSTEM_WORD, rows)
 
 

@@ -1,0 +1,456 @@
+﻿category,original,uk
+appearance,atletico,атлетичний
+appearance,sportivo,спортивний (любить спорт)
+appearance,gracile,тендітний
+hair,lunghi,довге (про волосся)
+hair,corti,коротке (про волосся)
+hair,lisci,пряме (про волосся)
+hair,calvo,лисий
+hair,ricci,кучеряве (про волосся)
+hair,mossi,хвилясте (про волосся)
+hair,brunetta,брюнетка
+hair,castani,каштанове (про волосся)
+hair,scuri,темне (про волосся)
+hair,bionda/i,блондинка / блондини
+hair,barba,борода
+hair,baffi,вуса
+personality,gentile,привітний / люб'язний
+personality,scortese,грубий / нечемний
+personality,buono,добрий
+personality,antipatico,неприємний (антипатичний)
+personality,avaro/tirchio,скупий
+personality,calmo,спокійний
+personality,spiritoso,дотепний
+personality,imparziale,неупереджений
+personality,noioso,нудний
+personality,normale,нормальний
+personality,strano,дивний
+personality,virtuoso,доброчесний
+personality,egocentrico,егоцентричний
+personality,profondo,глибокий
+personality,superficiale,поверховий
+personality,ordinario,звичайний
+personality,appariscente,показний / кричущий
+personality,attento,уважний
+personality,disattento,неуважний
+personality,prudente,обережний
+personality,spericolato,відчайдушний
+personality,sposato,одружений / заміжня
+personality,celibe/nubile,неодружений / незаміжня
+personality,chiacchierone,балакучий
+personality,tranquillo,тихий (мирний)
+personality,sicuro,упевнений
+personality,permaloso,образливий
+personality,affettuoso,ласкавий
+personality,irritante,такий що дратує
+personality,disinteressato,безкорисливий
+personality,famoso,відомий
+personality,sconosciuto,невідомий
+personality,debole,слабкий
+personality,stupido,дурний
+personality,allegro,життєрадісний
+clothes,giacca,піджак / куртка
+clothes,abito,вбрання (костюм)
+clothes,impermeabile,плащ-дощовик
+clothes,guanti,рукавички
+clothes,sandali,сандалі
+clothes,occhiali da vista/sole,окуляри (для зору / сонцезахисні)
+clothes,costume da bagno,купальник / плавки
+clothes,orecchini,сережки
+clothes,collana,намисто
+clothes,bracciale,браслет
+professions,infermiere/a,медбрат / медсестра
+professions,medico,лікар
+professions,dentista,стоматолог
+professions,dottore/ssa,доктор / докторка
+professions,attore,актор
+professions,attrice,акторка
+professions,ballerina,танцівниця
+professions,studente/ssa,студент / студентка
+professions,ingegnere,інженер
+professions,avvocato,адвокат
+professions,cameriere,офіціант
+professions,barista,бармен / бариста
+professions,poliziotto,поліцейський
+professions,architetto,архітектор
+professions,cuoco,кухар
+professions,calciatore,футболіст
+professions,autista/guidatore,водій
+professions,casalinga,домогосподарка
+professions,lavoratore,працівник
+professions,capo,начальник
+furniture,tappeto,килим
+furniture,cassettiera,комод
+furniture,ventilatore,вентилятор
+furniture,mensola (per libri),полиця (для книг)
+furniture,tenda,штора
+furniture,poltrona,крісло
+furniture,divano,диван
+furniture,quadro,картина
+furniture,scrivania,письмовий стіл
+furniture,cattedra,кафедра (стіл викладача)
+furniture,telecomando,пульт дистанційного керування
+furniture,registratore,диктофон / магнітофон
+furniture,tastiera,клавіатура
+furniture,lavagna,класна дошка
+furniture,gomma,гумка (ластик)
+house,camera,спальня (кімната)
+house,camera degli ospiti,гостьова кімната
+house,soggiorno,сімейна вітальня
+house,lo studio,кабінет
+house,lavanderia,пральня
+house,terrazza,тераса
+house,tetto,дах
+house,al piano terra,на першому поверсі
+house,al piano di sopra,нагорі (на верхньому поверсі)
+nature,cielo,небо
+nature,stella,зірка
+nature,sole,сонце
+nature,luna,місяць
+nature,montagna,гора
+nature,cima,верхівка
+nature,collina,пагорб
+nature,vetta,пік
+nature,pianura,рівнина
+nature,valle,долина
+nature,bosco,ліс
+nature,L'albero,дерево
+nature,cespuglio,кущ
+nature,Il fiore,квітка
+nature,campo,поле
+nature,prato,луг
+nature,mare,море
+nature,costa,узбережжя
+nature,spiaggia,пляж
+nature,sabbia,пісок
+nature,sponda,берег (річки)
+nature,riva,берег (моря чи озера)
+nature,fiume,річка
+nature,ruscello,струмок
+nature,lago,озеро
+nature,laghetto,ставок
+nature,roccia,скеля
+nature,cascata,водоспад
+geography,Il pianeta,планета
+geography,La Terra,Земля
+geography,Il mondo,світ
+geography,Il continente,континент
+geography,La penisola,півострів
+geography,L'isola,острів
+geography,L'oceano,океан
+geography,Il paese,країна / село
+geography,La campagna,сільська місцевість
+geography,Città,місто
+geography,I punti cardinali,сторони світу
+geography,nord,північ
+geography,sud,південь
+geography,est,схід
+geography,ovest,захід
+geography,orientale,східний
+geography,occidentale,західний
+city,palazzo,великий будинок (палац)
+city,statua,статуя
+city,ponte,міст
+city,fontana,фонтан
+city,monumento,пам'ятник
+city,marciapiede,тротуар
+city,centro storico,історичний центр
+city,aiuola,клумба
+city,panchina,лавка
+city,quartiere,район (квартал)
+city,tabellone,рекламний щит
+city,traffico,дорожній рух
+city,abitanti,мешканці
+city,piazza,площа
+city,semaforo,світлофор
+city,borgo,старе містечко
+city,largo (piazzetta),невелика площа
+city,vicolo,провулок
+city,ingresso,вхід
+city,corso,головна вулиця (проспект)
+city,uscita,вихід
+places,ospedale,лікарня
+places,aeroporto,аеропорт
+places,scuola,школа
+places,discoteca,нічний клуб
+places,ufficio postale,пошта
+places,albergo,готель
+places,commissariato di polizia,поліційний відділок
+places,teatro,театр
+places,distributore di benzina,автозаправка
+places,mercatino,базарчик
+places,libreria,книгарня
+places,museo,музей
+places,stadio,стадіон
+places,cattedrale,собор
+places,municipio,ратуша (мерія)
+places,biglietteria,квиткова каса
+places,stazione ferroviaria,залізничний вокзал
+places,stazione degli autobus,автовокзал
+transport,macchina/auto,автомобіль
+transport,motocicletta,мотоцикл
+transport,motorino,скутер
+transport,bicicletta,велосипед
+transport,autobus,автобус
+transport,treno,поїзд
+transport,barca,човен
+transport,traghetto,пором
+transport,nave,корабель
+transport,aereo,літак
+directions,lontano,далеко
+directions,vicino,близько
+directions,qui,тут
+directions,accanto a,поруч із
+directions,davanti a,перед (попереду)
+directions,dietro,позаду
+directions,di fronte a,навпроти
+directions,attorno,довкола
+directions,al centro,посередині
+directions,all'angolo,на розі
+directions,sopra,над (зверху)
+directions,sotto,під (знизу)
+directions,dentro,всередині
+directions,fuori,зовні
+directions,dritto,прямо
+directions,giro,поворот
+directions,dappertutto,скрізь
+directions,da nessuna parte,ніде
+animals,asino,осел
+animals,agnello,ягня
+animals,vitello,теля
+animals,coniglio,кролик
+animals,anatra,качка (домашня)
+animals,gallina,несучка (курка-квочка)
+animals,gallo,півень
+animals,oca,гуска
+animals,tacchino,індик
+animals,pulcino,курча
+animals,mosca,муха
+animals,zanzara,комар
+animals,ape,бджола
+kitchen,scodella,миска
+kitchen,tovaglia,скатертина
+kitchen,tovagliolo,серветка
+kitchen,tovaglioli di carta,паперові серветки
+kitchen,dispensa,комора для продуктів
+food,prosciutto,шинка
+food,bistecca,стейк
+food,salsicce,ковбаски
+food,arancia,апельсин
+food,pera,груша
+food,mirtillo,чорниця
+food,limone,лимон
+food,fico,інжир
+food,ciliegia,вишня
+food,pomodorino,помідор черрі
+food,carota,морква
+food,zucchine,цукіні
+food,patata,картопля
+food,fungo,гриб
+food,melanzana,баклажан
+food,insalata,салат
+food,zuppa,суп
+food,succo,сік
+food,burro,вершкове масло
+food,marmellata,джем
+food,burro di arachidi,арахісова паста
+food,formaggio,сир
+food,olio,олія
+food,aceto,оцет
+food,farina,борошно
+food,cereali,пластівці (злаки)
+adjectives,moderno,сучасний
+adjectives,antico,старовинний
+adjectives,nuovo,новий
+adjectives,aperto,відкритий
+adjectives,chiuso,закритий
+adjectives,acceso,увімкнений
+adjectives,spento,вимкнений
+adjectives,valido,чинний
+adjectives,scaduto,прострочений
+adjectives,grande,великий
+adjectives,piccolo,маленький
+adjectives,occupato,зайнятий
+adjectives,libero,вільний
+adjectives,caldo,гарячий
+adjectives,freddo,холодний
+adjectives,ricco,багатий
+adjectives,povero,бідний
+adjectives,caro,дорогий (за ціною)
+adjectives,economico,дешевий
+adjectives,pieno,повний
+adjectives,vuoto,порожній
+adjectives,comodo,зручний
+adjectives,scomodo,незручний
+adjectives,largo,широкий (вільний)
+adjectives,stretto,вузький (тісний)
+adjectives,facile,легкий (простий)
+adjectives,difficile,складний
+adjectives,numeroso,численний
+adjectives,pochi,небагато
+adjectives,utile,корисний
+adjectives,inutile,марний
+adjectives,rumoroso,гучний
+adjectives,colpevole,винний
+adjectives,innocente,невинний
+adjectives,originale,оригінальний
+adjectives,unico,єдиний (унікальний)
+adjectives,semplice,простий
+adjectives,elegante,елегантний
+adjectives,necessario,необхідний
+adjectives,indispensabile,незамінний
+adjectives,bagnato,мокрий
+adjectives,asciutto,сухий
+adjectives,giusto,правильний (справедливий)
+adjectives,sbagliato,неправильний
+adjectives,vero,правдивий
+adjectives,falso,хибний
+adjectives,pesante,важкий
+adjectives,leggero,легкий (за вагою)
+adjectives,in anticipo,завчасно
+adjectives,in ritardo,із запізненням
+adjectives,in orario,вчасно
+adjectives,affollato,людний
+adjectives,pulito,чистий
+adjectives,sporco,брудний
+adjectives,rapido/veloce,швидкий
+adjectives,lento,повільний
+adjectives,lungo,довгий
+adjectives,corto,короткий
+adjectives,a righe,у смужку
+adjectives,a scacchi,у клітинку
+adjectives,a pois,у горошок
+adjectives,in tinta unita,однотонний
+sports,calcio,футбол
+sports,scherma,фехтування
+sports,pallacanestro,баскетбол
+sports,pallavolo,волейбол
+sports,nuoto,плавання
+sports,pallanuoto,водне поло
+sports,tuffi,стрибки у воду
+sports,pattinaggio,катання на ковзанах
+sports,sci,катання на лижах
+sports,sci di fondo,лижні перегони
+sports,ginnastica,гімнастика
+sports,equitazione,верхова їзда
+sports,corsa,біг (легка атлетика)
+sports,corsa ad ostacoli,біг із перешкодами
+sports,salto in alto,стрибки у висоту
+sports,salto in lungo,стрибки в довжину
+sports,ciclismo,велоспорт
+sports,motociclismo,мотогонки
+sports,automobilismo,автоперегони
+sports,vela,вітрильний спорт / вітрило
+sports,canottaggio,веслування
+sports,pugilato,бокс
+sports,baseball,бейсбол
+sports,football americano,американський футбол
+sports,tennis,теніс
+sports,golf,гольф
+sports,rugby,регбі
+sports,hockey,хокей
+sports,windsurf,віндсерфінг
+sports,bob,бобслей
+sports,ping pong,настільний теніс
+sports,squash,сквош
+sports,karate,карате
+sports,judo,дзюдо
+equipment,pattini,ковзани / ролики
+equipment,Gli sci,лижі
+equipment,canoa,каное
+equipment,tavola,дошка для серфінгу
+equipment,fioretto,рапіра
+equipment,spada,шпага
+equipment,piscina,басейн
+equipment,racchetta,ракетка
+equipment,pallone,м'яч
+equipment,pallina,м'ячик
+equipment,pesi,гантелі / тягарі
+equipment,guantoni,боксерські рукавички
+weather,C'è sole,сонячно
+weather,pioggia,дощ
+weather,piove,іде дощ
+weather,neve,сніг
+weather,nevica,іде сніг
+weather,vento,вітер
+weather,C'è il vento,вітряно
+weather,nuvola,хмара
+weather,nuvoloso,хмарно
+weather,nebbia,туман
+weather,C'è la nebbia,туманно
+weather,grandine,град
+weather,Grandina,іде град
+weather,sereno,ясно
+weather,burrascoso/tempestoso,штормовий
+weather,Fa bello,гарна погода
+weather,Fa brutto tempo,погана погода
+weather,umido,вологий
+weather,afoso,задушливий
+weather,Fa caldo,спекотно
+weather,Fa freddo,холодно
+weather,Fa bel tempo,гарна тепла погода
+weather,Si gela,мороз (дуже холодно)
+weather,C'è tuono,гримить грім
+weather,C'è fulmine,блискає блискавка
+weather,è luminoso,світло (яскраво)
+weather,è buio,темно
+weather,temporale,гроза
+weather,variabile,мінлива
+body,orecchio,вухо
+body,denti,зуби
+body,gola,горло
+health,Mi fa male,у мене болить
+health,Ho mal di denti,у мене болять зуби
+health,Ho mal d'orecchi,у мене болять вуха
+health,Ho mal di testa,у мене болить голова
+health,Ho mal di stomaco,у мене болить живіт
+health,il capogiro,запаморочення
+health,la nausea,нудота
+health,i brividi,озноб
+health,meglio,краще
+health,peggio,гірше
+health,un raffreddore,застуда (нежить)
+health,la tosse,кашель
+health,La febbre,температура (гарячка)
+health,un'emicrania,мігрень
+health,l'influenza,грип
+health,Ho freddo,мені холодно
+health,Ho caldo,мені жарко
+health,Ho sete,я хочу пити
+health,Ho fame,я голодний
+health,Ho sonno,мені хочеться спати
+health,Sono malato,я хворий
+health,Sono depresso,я пригнічений (у депресії)
+days,lunedì,понеділок
+days,martedì,вівторок
+days,mercoledì,середа
+days,giovedì,четвер
+days,venerdì,п'ятниця
+days,sabato,субота
+days,domenica,неділя
+days,lunedì scorso,минулого понеділка
+days,lunedì prossimo,наступного понеділка
+days,ieri,вчора
+days,oggi,сьогодні
+days,domani,завтра
+days,dopodomani,післязавтра
+months,gennaio,січень
+months,febbraio,лютий
+months,marzo,березень
+months,aprile,квітень
+months,maggio,травень
+months,giugno,червень
+months,luglio,липень
+months,agosto,серпень
+months,settembre,вересень
+months,ottobre,жовтень
+months,novembre,листопад
+months,dicembre,грудень
+holidays,Natale,Різдво
+holidays,Pasqua,Великдень
+holidays,Avvento,Адвент (час перед Різдвом)
+holidays,Quaresima,Великий піст
+holidays,Capodanno,Новий рік
+holidays,La Vigilia,переддень свята (святвечір)
+holidays,Ognissanti,День Всіх Святих
+holidays,Ferragosto,Феррагосто (15 серпня)
